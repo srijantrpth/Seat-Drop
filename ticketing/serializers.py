@@ -17,5 +17,5 @@ class EventSerializer(serializers.ModelSerializer):
         
         
 class CheckoutSerializer(serializers.Serializer):
-    quantity = serializers.IntegerField(min=1, max=10)
+    quantity = serializers.IntegerField(min_value=1, max_value=10)
     tier_id = serializers.IntegerField()

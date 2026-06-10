@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
 import uuid
+
 # Create your models here.
 
 
@@ -12,6 +13,9 @@ class Event(models.Model):
     end_time = models.DateTimeField()
     is_published = models.BooleanField(default=False)
     organizer = models.ForeignKey(User, on_delete=models.CASCADE)
+    
+    def __str__(self):
+        return f"{self.title}"
 
 class TicketTier(models.Model):
     TICKET_CHOICES = (
@@ -23,6 +27,9 @@ class TicketTier(models.Model):
     available_quantity  = models.IntegerField()
     price = models.DecimalField(max_digits=8, decimal_places=2)
     event = models.ForeignKey(Event, on_delete=models.SET_NULL,null=True, related_name='tiers')
+
+    def __str__(self):
+        return f"{self.name} - {self.event}"
 
 class Order(models.Model):
     STATUS_CHOICES = (
@@ -36,6 +43,9 @@ class Order(models.Model):
     total_price = models.DecimalField(max_digits=8, decimal_places=2)
     status = models.CharField(max_length=10, choices=STATUS_CHOICES)
     created_at = models.DateTimeField(auto_now_add=True)
+    
+    def __str__(self):
+        return f"Order {self.id} by {self.purchaser.username} for {self.event.title}"
 
 
 class Ticket(models.Model):
@@ -43,6 +53,8 @@ class Ticket(models.Model):
     ticket_tier = models.ForeignKey(TicketTier, on_delete=models.CASCADE)
     ticket_id = models.UUIDField(default=uuid.uuid4,unique=True, editable=False)
     is_scanned = models.BooleanField(default=False)
+    def __str__(self):
+        return f"Ticket {self.ticket_id} for {self.ticket_tier.name} - {self.order.event.title}"
 
 
 

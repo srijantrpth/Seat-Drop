@@ -10,7 +10,10 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/6.0/ref/settings/
 """
 
+import os
 from pathlib import Path
+
+from dotenv import load_dotenv
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -69,6 +72,13 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'seatdrop.wsgi.application'
+
+BASE_DIR=Path(__file__).resolve().parent.parent
+
+load_dotenv(os.path.join(BASE_DIR, '.env'))
+SECRET_KEY=os.getenv('REDIS_URL')
+DEBUG=os.getenv('DEBUG', 'True') == 'True'
+CELERY_BROKER_URL=os.getenv('REDIS_URL')
 
 
 # Database

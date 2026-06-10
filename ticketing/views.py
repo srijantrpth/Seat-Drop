@@ -1,5 +1,7 @@
 from django.shortcuts import render
 from rest_framework import viewsets
+
+from .tasks import send_completion_email
 # Create your views here.
 from .models import Event, TicketTier, Order, Ticket
 from .serializers import EventSerializer, TicketTierSerializer, CheckoutSerializer
@@ -31,6 +33,7 @@ class CheckoutView(APIView):
                 tier.save()
                 tickets_to_create = [Ticket(order=order, ticket_tier=tier) for _ in range(quantity)]
                 Ticket.objects.bulk_create(tickets_to_create)
+            transaction.on_commit(lambda:send_completion_email(order.id))
             return Response({f"message": f"Successfully purchased {quantity} tickets for {tier.event.title} at {total_price}"}, status=status.HTTP_201_CREATED)
             
             

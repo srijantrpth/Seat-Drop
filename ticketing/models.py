@@ -13,7 +13,7 @@ class Event(models.Model):
     end_time = models.DateTimeField()
     is_published = models.BooleanField(default=False)
     organizer = models.ForeignKey(User, on_delete=models.CASCADE)
-    
+    is_sold_out = models.BooleanField(default=False)
     def __str__(self):
         return f"{self.title}"
 
